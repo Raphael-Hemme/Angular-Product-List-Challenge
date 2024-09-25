@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { catchError, from, map, Observable, of, take } from 'rxjs';
+import { catchError, from, map, Observable, of } from 'rxjs';
 
 export type ProductListEntryData = {
   id: number;
@@ -79,14 +79,6 @@ export class ApiService {
     return this.getQueryObservable(url, 'PRODUCT SEARCH');
   }
 
-  public searchProductsNew(
-    searchQuery: string,
-    fieldSelection: string = DEFAULT_PRODUCT_LIST_FIELD_SELECTION
-  ): Observable<InternalResponseWrapper> {
-    const url = `${BASE_URL}/search?q=${searchQuery}&select=${fieldSelection}`;
-    return this.getQueryObservable(url, 'PRODUCT SEARCH');
-  }
-
   /**
    * Utility function adapted from Kent C. Dodds to get error message from error object object if it actually
    * is an Error object otherwise stringify the 'error'.
@@ -131,14 +123,14 @@ export class ApiService {
     responseData: unknown,
     query: ProductDomain
   ): InternalResponseWrapper {
-    if (this.isValidValidProductDetailsData(responseData)) {
+    if (this.isValidProductDetailsData(responseData)) {
       // prettier-ignore
       const data = this.extractValidResponseData(responseData, query) as ProductDetailsData;
       return {
         data,
         error: null
       };
-    } else if (this.isValidValidProductListData(responseData)) {
+    } else if (this.isValidProductListData(responseData)) {
       // prettier-ignore
       const data = this.extractValidResponseData(responseData, query) as ProductListEntryData[];
       return {
@@ -164,7 +156,7 @@ export class ApiService {
     }
   }
 
-  private isValidValidProductDetailsData(
+  private isValidProductDetailsData(
     data: any
   ): data is ValidProductDetailsResponseData {
     return !(
@@ -175,7 +167,7 @@ export class ApiService {
     );
   }
 
-  private isValidValidProductListData(
+  private isValidProductListData(
     data: any
   ): data is ValidProductListResponseData {
     return !(
